@@ -1,0 +1,20 @@
+{
+	"system": {
+		"debug":				true,	// Enable debug output
+		"fullscreen":			false,	// Attempt to run fullscreen
+		"bufferAutoSize":		false,	// Automaticlly resize the framebuffer to match the window size, otherwise its stretched
+		"windowWidth":			640,
+		"windowHeight":			360,
+		"bufferWidth":			640,
+		"bufferHeight":			360
+	},
+	"neo": {
+		"useInternalTimer":		true,	// Use CPU timer instead of relying on vsync for framerate
+		"qualityPreset":		3,		// Postprocessing shader LOD
+										// ?: Debug, displays texture alpha and depth channels
+										// 0: No post
+										// 1: Color graded image
+										// 2: Color grading with noise and vignetty effect
+										// 3: Color grading with RGBA noise, enhanced vignetty, glow and optional TV filter
+	}
+}
