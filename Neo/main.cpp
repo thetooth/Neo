@@ -23,10 +23,10 @@ using namespace klib;
 using namespace NeoPlatformer;
 
 void Loading(KLGL *gc, KLGLTexture *loading);
-void Warning(KLGL *gc, char *errorMessage, KLGLTexture *warning = nullptr);
+void Warning(KLGL *gc, KLGLTexture *warning = nullptr);
 
 int main(int argc, wchar_t **argv){
-	int consoleInput = 0;
+	int consoleInput = 1;
 	char inputBuffer[256] = {};
 	char textBuffer[4096] = {};
 	bool quit = false, internalTimer = false, mapScroll = false;
@@ -35,23 +35,6 @@ int main(int argc, wchar_t **argv){
 	POINT mouseXY, mouseXY_prev;
 	clock_t t0 = clock(),t1 = 0,t2 = 0;
 	char wTitle[256] = {};
-
-	float color[8][3]= {{ 1.0,  1.0,  0.0}, 
-	{ 1.0,  0.0,  0.0},
-	{ 0.0,  0.0,  0.0},
-	{ 0.0,  1.0,  0.0},
-	{ 0.0,  1.0,  1.0},
-	{ 1.0,  1.0,  1.0},
-	{ 1.0,  0.0,  1.0},
-	{ 0.0,  0.0,  1.0}};
-	float cube[8][3]= {{ 0.5,  0.5, -0.5}, 
-	{ 0.5, -0.5, -0.5},
-	{-0.5, -0.5, -0.5},
-	{-0.5,  0.5, -0.5},
-	{-0.5,  0.5,  0.5},
-	{ 0.5,  0.5,  0.5},
-	{ 0.5, -0.5,  0.5},
-	{-0.5, -0.5,  0.5}};
 
 	enum GameMode {_MENU, _MAPLOAD, _MAPDESTROY, _INGAME, _CREDITS};
 	int mode = 0, paused = 0;
@@ -88,14 +71,14 @@ int main(int argc, wchar_t **argv){
 		gc = new KLGL("Neo", APP_SCREEN_W, APP_SCREEN_H, 60, false);
 
 		// Init filesystem
-		memset(&zip_archive, 0, sizeof(zip_archive));
+		/*memset(&zip_archive, 0, sizeof(zip_archive));
 		status = mz_zip_reader_init_file(&zip_archive, "common.zip", 0);
 		if (!status){
 			cl("mz_zip_reader_init_file() failed!\n");
 		}else{
 			cl("Initialized compressed filesystem(Miniz %s), using it...\n", MZ_VERSION);
 			// Try to extract to the heap.
-			char* fname = "ambient.mp3";
+			char* fname = "common/sounds/ambient.mp3";
 			p = mz_zip_reader_extract_file_to_heap(&zip_archive, fname, &uncomp_size, 0);
 			if (!p){
 				printf("mz_zip_reader_extract_file_to_heap() failed!\n");
@@ -106,7 +89,7 @@ int main(int argc, wchar_t **argv){
 			// We're done.
 			free(p);
 			mz_zip_reader_end(&zip_archive);
-		}
+		}*/
 
 		// Python
 		PyImport_AppendInittab("emb", emb::PyInit_emb);
@@ -143,7 +126,7 @@ int main(int argc, wchar_t **argv){
 		// Textures
 		charmapTexture  = new KLGLTexture("common/textures/internalfont.png");
 		charmapTexture2  = new KLGLTexture("common/textures/numbers.png");
-		testTexture = new KLGLTexture("common/textures/cloud10.png");
+		testTexture = new KLGLTexture("common/textures/test.png");
 		loadingTexture = new KLGLTexture("common/textures/loading.png");
 		titleTexture = new KLGLTexture("common/textures/neo-logo.png");
 
@@ -167,9 +150,9 @@ int main(int argc, wchar_t **argv){
 
 		// Default shaders
 		/*gc->InitShaders(0, 0, 
-			"common/shaders/postDefaultV.glsl",
-			"common/shaders/crt.frag"
-			);*/
+		"common/shaders/postDefaultV.glsl",
+		"common/shaders/test.frag"
+		);*/
 		gc->InitShaders(5, 0, 
 			"common/shaders/postDefaultV.glsl",
 			"common/shaders/waves.frag"
@@ -177,6 +160,10 @@ int main(int argc, wchar_t **argv){
 		gc->InitShaders(6, 0, 
 			"common/shaders/model.vert",
 			"common/shaders/model.frag"
+			);
+		gc->InitShaders(7, 0, 
+			"common/shaders/postDefaultV.glsl",
+			"common/shaders/cubes.frag"
 			);
 
 		// Particles
@@ -188,7 +175,12 @@ int main(int argc, wchar_t **argv){
 
 	}catch(KLGLException e){
 		quit = 1;
-		Warning(gc, e.getMessage(), warningTexture);
+		if (KLGLDebug){
+			cl("Dumping call stack...\n---------\n");
+			//sw.ShowCallstack();
+			cl("\n---------\n%s", e.getMessage());
+		}
+		Warning(gc, warningTexture);
 	}
 
 	cl("\nNeo %s R%d\n", NEO_VERSION, NEO_BUILD_VERSION);
@@ -200,9 +192,9 @@ int main(int argc, wchar_t **argv){
 
 	if (quit){
 		MessageBox(NULL, "An important resource is missing or failed to load, check the console window _now_ for more details.", "Error", MB_OK | MB_ICONERROR);
-#ifdef KLGLDebug
-		quit = 0;
-#endif
+		if(KLGLDebug){
+			quit = 0;
+		}
 	}
 
 	while (clock()-t0 < 2500 && !KLGLDebug){
@@ -385,91 +377,16 @@ int main(int argc, wchar_t **argv){
 
 					gc->OrthogonalStart();
 
-					gc->BindShaders(5);
+					/*gc->BindShaders(5);
 					glUniform1f(glGetUniformLocation(gc->GetShaderID(5), "time"), cycle/40.0f);
-					glUniform2f(glGetUniformLocation(gc->GetShaderID(5), "resolution"), gc->window.width*(gc->overSampleFactor/1.0f), gc->window.height*(gc->overSampleFactor/1.0f));
+					glUniform2f(glGetUniformLocation(gc->GetShaderID(5), "resolution"), gc->buffer.width, gc->buffer.height);
 					gc->BindMultiPassShader(5, 1, false);
 					gc->UnbindShaders();
-
-					gc->OrthogonalEnd();
-
-					glMatrixMode( GL_PROJECTION );
-					glLoadIdentity( );
-					glOrtho( -2.0, 2.0, -2.0, 2.0, -20.0, 20.0 );
-					glViewport(0, 0, gc->buffer.width, gc->buffer.height);
-					gluPerspective(45.0f, 1.0f*gc->buffer.width/gc->buffer.height, 0.1, 100.0);
-
-					glMatrixMode( GL_MODELVIEW );
-					glLoadIdentity( );
-					glEnable(GL_DEPTH_TEST);
-					glClear(GL_DEPTH_BUFFER_BIT);
-
-					glPushMatrix();
-					glTranslatef(0.0f, 0.0f, -1.5f);
-					glRotatef(cycle/10.0, 1.0, 1.0, 1.0);
-
-					gc->BindShaders(6);
-					glUniform1f(glGetUniformLocation(gc->GetShaderID(6), "time"), cycle/40.0f);
-					glBegin( GL_QUADS );
-					glColor3fv(color[0]);
-					glVertex3fv(cube[0]);
-					glColor3fv(color[1]);
-					glVertex3fv(cube[1]);
-					glColor3fv(color[2]);
-					glVertex3fv(cube[2]);
-					glColor3fv(color[3]);
-					glVertex3fv(cube[3]);
-
-					glColor3fv(color[3]);
-					glVertex3fv(cube[3]);
-					glColor3fv(color[4]);
-					glVertex3fv(cube[4]);
-					glColor3fv(color[7]);
-					glVertex3fv(cube[7]);
-					glColor3fv(color[2]);
-					glVertex3fv(cube[2]);
-
-					glColor3fv(color[0]);
-					glVertex3fv(cube[0]);
-					glColor3fv(color[5]);
-					glVertex3fv(cube[5]);
-					glColor3fv(color[6]);
-					glVertex3fv(cube[6]);
-					glColor3fv(color[1]);
-					glVertex3fv(cube[1]);
-
-					glColor3fv(color[5]);
-					glVertex3fv(cube[5]);
-					glColor3fv(color[4]);
-					glVertex3fv(cube[4]);
-					glColor3fv(color[7]);
-					glVertex3fv(cube[7]);
-					glColor3fv(color[6]);
-					glVertex3fv(cube[6]);
-
-					glColor3fv(color[5]);
-					glVertex3fv(cube[5]);
-					glColor3fv(color[0]);
-					glVertex3fv(cube[0]);
-					glColor3fv(color[3]);
-					glVertex3fv(cube[3]);
-					glColor3fv(color[4]);
-					glVertex3fv(cube[4]);
-
-					glColor3fv(color[6]);
-					glVertex3fv(cube[6]);
-					glColor3fv(color[1]);
-					glVertex3fv(cube[1]);
-					glColor3fv(color[2]);
-					glVertex3fv(cube[2]);
-					glColor3fv(color[7]);
-					glVertex3fv(cube[7]);
-					glEnd();
-					gc->UnbindShaders();
-
-					glPopMatrix();
-
-					gc->OrthogonalStart();
+					gc->BindShaders(7);
+					glUniform1f(glGetUniformLocation(gc->GetShaderID(7), "time"), cycle/100.0f);
+					glUniform2f(glGetUniformLocation(gc->GetShaderID(7), "resolution"), gc->buffer.width, gc->buffer.height);
+					gc->BindMultiPassShader(7, 1, false);
+					gc->UnbindShaders();*/
 
 					gc->Blit2D(titleTexture, 0, 0);
 
@@ -480,7 +397,7 @@ int main(int argc, wchar_t **argv){
 
 					// Fader
 					if (titleFade < 254){
-						//gc->Rectangle2D(0, 0, gc->buffer.width, gc->buffer.height, KLGLColor(0, 0, 0, int(255-titleFade)));
+						gc->Rectangle2D(0, 0, gc->buffer.width, gc->buffer.height, KLGLColor(0, 0, 0, int(255-titleFade)));
 					}
 				}
 				gc->OrthogonalEnd();
@@ -714,18 +631,19 @@ int main(int argc, wchar_t **argv){
 						glUniform2f(glGetUniformLocation(gc->GetShaderID(4), "position"), (gameEnv->scroll.x-(56*16))/1.0f, (gameEnv->scroll.y-(27*16))/1.0f);
 						glUniform1f(glGetUniformLocation(gc->GetShaderID(4), "radius"), 140.0f);
 						glUniform1f(glGetUniformLocation(gc->GetShaderID(4), "blendingDivision"), 5.0f+sin(cycle/16.0f));
+						glUniform2f(glGetUniformLocation(gc->GetShaderID(4), "mouse"), mouseXY.x, mouseXY.y);
 						gc->BindMultiPassShader(4, 1, false);
 						gc->UnbindShaders();
 
 						/*for (int i = 0; i < 100; i++)
 						{
-							int x = (stars[i]->x-240)-(gameEnv->scroll.x*2);
-							int y = (stars[i]->y-240)-(gameEnv->scroll.y*2);
-							if(x < 0 || x > APP_SCREEN_W || y < 0 || y > APP_SCREEN_H){
-								//continue;
-							}
-							//gc->Blit2D(testTexture, x, y);
-							gc->Rectangle2D(x, y, 1, 1, KLGLColor(255, 255, 255, 127+rand()%47));
+						int x = (stars[i]->x-240)-(gameEnv->scroll.x*2);
+						int y = (stars[i]->y-240)-(gameEnv->scroll.y*2);
+						if(x < 0 || x > APP_SCREEN_W || y < 0 || y > APP_SCREEN_H){
+						//continue;
+						}
+						//gc->Blit2D(testTexture, x, y);
+						gc->Rectangle2D(x, y, 1, 1, KLGLColor(255, 255, 255, 127+rand()%47));
 						}
 
 						// Reset pallet
@@ -748,20 +666,25 @@ int main(int argc, wchar_t **argv){
 						gc->BindMultiPassShader(2, 1, false);
 						gc->UnbindShaders();*/
 
+						glActiveTexture(GL_TEXTURE1);
+						glBindTexture(GL_TEXTURE_2D, gameEnv->lvlupTexture->gltexture);
+						glActiveTexture(GL_TEXTURE2);
+						glBindTexture(GL_TEXTURE_2D, testTexture->gltexture);
+						gc->BindShaders(5);
+						glUniform1i(glGetUniformLocation(gc->GetShaderID(5), "tileTexture"), 1);
+						glUniform1i(glGetUniformLocation(gc->GetShaderID(5), "maskTexture"), 2);
+						glUniform1f(glGetUniformLocation(gc->GetShaderID(5), "time"), gc->shaderClock);
+						glUniform2f(glGetUniformLocation(gc->GetShaderID(5), "resolution"), gc->buffer.width, gc->buffer.height);
+						glUniform4f(glGetUniformLocation(gc->GetShaderID(5), "tileRect"), 0, 0, 32, 32);
+						gc->BindMultiPassShader(5, 1, false);
+						gc->UnbindShaders();
+
 						// Master post shader data
 						gc->BindShaders(1);
 						glUniform1f(glGetUniformLocation(gc->GetShaderID(1), "time"), gc->shaderClock);
 						glUniform2f(glGetUniformLocation(gc->GetShaderID(1), "resolution"), gc->buffer.width/gc->overSampleFactor, gc->buffer.height/gc->overSampleFactor);
 						gc->BindMultiPassShader(1, 1, false);
 						gc->UnbindShaders();
-
-						/*gc->BindShaders(2);
-						glUniform1f(glGetUniformLocation(gc->GetShaderID(2), "time"), gc->shaderClock);
-						//glUniform2f(glGetUniformLocation(gc->GetShaderID(2), "inputSize"), mouseXY.x, mouseXY.y);
-						//glUniform2f(glGetUniformLocation(gc->GetShaderID(2), "outputSize"), mouseXY.x, mouseXY.y);
-						//glUniform2f(glGetUniformLocation(gc->GetShaderID(2), "textureSize"), mouseXY.x, mouseXY.y);
-						gc->BindMultiPassShader(2, 1, false);
-						gc->UnbindShaders();*/
 
 						// HUD, Score, Health, etc
 						gameEnv->drawHUD(gc);
@@ -790,7 +713,7 @@ int main(int argc, wchar_t **argv){
 				gc->Swap();
 				break;
 			default:
-				Warning(gc, "No mode selected.", warningTexture);
+				Warning(gc, warningTexture);
 				Sleep(1000);
 			}
 			frame++;
@@ -821,7 +744,7 @@ void Loading(KLGL *gc, KLGLTexture *loading)
 	gc->Swap();
 }
 
-void Warning(KLGL *gc, char *errorMessage, KLGLTexture *warning){
+void Warning(KLGL *gc, KLGLTexture *warning){
 	static KLGLFont *font;
 	if (font == NULL){
 		font = new KLGLFont();
@@ -832,7 +755,7 @@ void Warning(KLGL *gc, char *errorMessage, KLGLTexture *warning){
 		if (warning != nullptr){
 			gc->Blit2D(warning, 0, 0);
 		}
-		font->Draw(0, 8, errorMessage);
+		font->Draw(0, 8, clBuffer);
 	}
 	gc->OrthogonalEnd();
 	gc->Swap();

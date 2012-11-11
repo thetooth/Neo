@@ -23,10 +23,11 @@ namespace NeoPlatformer{
 		}
 		// TODO: Write fancy parser
 		int location;
+		char* varName;
 		switch(string[0]){
 		case '$':						// Process var
 			location = strchr(string, (int)'=')-string+1;
-			char* varName = new char[location+8];
+			varName = new char[location+8];
 			substr(varName, string, 1, location);
 			if (strlen(varName) > 0){
 				auto p = callbackPtrMap.find(varName);

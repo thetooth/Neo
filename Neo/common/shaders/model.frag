@@ -35,9 +35,8 @@ void main()
 {
 	vec2 uv = gl_TexCoord[0].xy;
 
-	float diffuse_value = max(dot(vertex_normal, vertex_light_position), 0.0);
+	/*float diffuse_value = max(dot(vertex_normal, vertex_light_position), 0.0);
 	float fDepth = 1.0 - (gl_FragCoord.z / gl_FragCoord.w) / 100.0;
-    float ambientOcclusion = texture2D(AmbientOcclusion, vTexCoord).r;
-	float grain = (rand(gl_FragCoord.xy*time)/5.0)+0.5;
-	gl_FragColor = gl_Color+vec4(crosshatch()+grain, 1.0);
+    float ambientOcclusion = texture2D(AmbientOcclusion, vTexCoord).r;*/
+	gl_FragColor = gl_Color+vec4(crosshatch(), 1.0);
 }

@@ -15,10 +15,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "kami", "..\Kamilib\kami\kam
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "buildnumber", "..\Kamilib\buildnumber\buildnumber.vcxproj", "{8EA5F007-6413-4A94-840E-C1EF4333C2EF}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UI", "..\Kamilib\UI\UI.vcxproj", "{CC817107-CABF-4F07-A972-6EEF8817BA75}"
-	ProjectSection(ProjectDependencies) = postProject
-		{B6E34BA6-2376-4D5E-B2E9-15E6DA338BE7} = {B6E34BA6-2376-4D5E-B2E9-15E6DA338BE7}
-	EndProjectSection
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UI", "UI\UI.vcxproj", "{CC817107-CABF-4F07-A972-6EEF8817BA75}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -30,7 +27,8 @@ Global
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{4B3B195B-51EE-41CF-92BE-A927AD6EB71F}.Debug|Win32.ActiveCfg = Debug|Win32
 		{4B3B195B-51EE-41CF-92BE-A927AD6EB71F}.Debug|Win32.Build.0 = Debug|Win32
-		{4B3B195B-51EE-41CF-92BE-A927AD6EB71F}.Debug|x64.ActiveCfg = Debug|Win32
+		{4B3B195B-51EE-41CF-92BE-A927AD6EB71F}.Debug|x64.ActiveCfg = Debug|x64
+		{4B3B195B-51EE-41CF-92BE-A927AD6EB71F}.Debug|x64.Build.0 = Debug|x64
 		{4B3B195B-51EE-41CF-92BE-A927AD6EB71F}.Release|Win32.ActiveCfg = Release|Win32
 		{4B3B195B-51EE-41CF-92BE-A927AD6EB71F}.Release|Win32.Build.0 = Release|Win32
 		{4B3B195B-51EE-41CF-92BE-A927AD6EB71F}.Release|x64.ActiveCfg = Release|Win32
@@ -50,7 +48,6 @@ Global
 		{8EA5F007-6413-4A94-840E-C1EF4333C2EF}.Release|x64.ActiveCfg = Release|x64
 		{8EA5F007-6413-4A94-840E-C1EF4333C2EF}.Release|x64.Build.0 = Release|x64
 		{CC817107-CABF-4F07-A972-6EEF8817BA75}.Debug|Win32.ActiveCfg = Debug|Win32
-		{CC817107-CABF-4F07-A972-6EEF8817BA75}.Debug|Win32.Build.0 = Debug|Win32
 		{CC817107-CABF-4F07-A972-6EEF8817BA75}.Debug|x64.ActiveCfg = Debug|x64
 		{CC817107-CABF-4F07-A972-6EEF8817BA75}.Debug|x64.Build.0 = Debug|x64
 		{CC817107-CABF-4F07-A972-6EEF8817BA75}.Release|Win32.ActiveCfg = Release|Win32
@@ -60,9 +57,6 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(Performance) = preSolution
-		HasPerformanceSessions = true
 	EndGlobalSection
 	GlobalSection(CodealikeProperties) = postSolution
 		SolutionGuid = b417ab1c-d3b2-4c7c-985c-ef9eb1688f44

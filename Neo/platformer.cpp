@@ -195,7 +195,7 @@ namespace NeoPlatformer{
 					gc->BlitSprite2D(hudSpriteSheet8, offset+(i*8), 16, 3);
 				}
 			}
-			hudFont->Draw(offset-(16*8), 16, "@DSCORE: 00000");
+			hudFont->Draw(offset-(16*8), 16, "$ 150.08");
 		}
 	}
 
@@ -390,6 +390,10 @@ namespace NeoPlatformer{
 			// Create our character
 			gameEnv->character = new Character(128, 0, 8, 16);
 			gameEnv->enemys.push_back(new Enemy(128, 415, 16, 16));
+			for (int i = 0; i < 16; i++)
+			{
+				gameEnv->enemys.push_back(new Enemy(rand()%512, rand()%256, 16, 16));
+			}
 			// Map sprites
 			gameEnv->mapSpriteSheet = new KLGLSprite("common/textures/tilemap.png", 16, 16);
 			gameEnv->hudSpriteSheet8 = new KLGLSprite("common/textures/hud8.png", 8, 8);
@@ -397,8 +401,9 @@ namespace NeoPlatformer{
 			// Textures
 			gameEnv->backdropTexture = new KLGLTexture("common/textures/clouds.png");
 			gameEnv->gameoverTexture = new KLGLTexture("common/textures/gameover.png");
+			gameEnv->lvlupTexture = new KLGLTexture("common/textures/lvlup.png");
 			// Audio
-			gameEnv->audioProxy->loadSound("common/sounds/Hotsy-Totsy.wav", 1, FMOD_LOOP_NORMAL);
+			gameEnv->audioProxy->loadSound("common/sounds/highway.mp3", 1, FMOD_LOOP_NORMAL);
 			gameEnv->audioProxy->loadSound("common/sounds/jump.wav", 2, FMOD_LOOP_OFF);
 			gameEnv->audioProxy->loadSound("common/sounds/hurt.wav", 3, FMOD_LOOP_OFF);
 			gameEnv->audioProxy->loadSound("common/sounds/ambient2.mp3", 4, FMOD_LOOP_NORMAL);
@@ -418,6 +423,10 @@ namespace NeoPlatformer{
 			gameEnv->gcProxy->InitShaders(4, 0, 
 				"common/shaders/postDefaultV.glsl",
 				"common/shaders/lights.frag"
+				);
+			gameEnv->gcProxy->InitShaders(5, 0, 
+				"common/shaders/postDefaultV.glsl",
+				"common/shaders/mask.frag"
 				);
 		}catch(KLGLException e){
 			MessageBox(NULL, e.getMessage(), "KLGLException", MB_OK | MB_ICONERROR);

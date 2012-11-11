@@ -1,6 +1,7 @@
 #pragma once
 
 #include "kami.h"
+#include "threads.h"
 namespace klib{
 
 	#define FPM 9

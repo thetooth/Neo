@@ -50,8 +50,10 @@ void main(){
 		break;
 	case 3: // Full Retard
 		stage0 = vec3(0.0);
-		stage0 += grade(color).rgb;
-		stage0 *= pow( 32.0*uv.x*uv.y*(1.0-uv.x)*(1.0-uv.y), 0.125 );
+		//coord.x += sin(uv.y * 3.0 * 2.0 * 3.14159 + (time/500.0)) / 100.0;
+		//coord.y += sin(uv.x * 3.0 * 2.0 * 3.14159 + (time/500.0)) / 100.0;
+		stage0 += grade(texture2D(image, coord)).rgb;
+		stage0 *= pow( 32.0*uv.x*uv.y*(1.0-uv.x)*(1.0-uv.y), 0.055 );
 		stage0 *= rgbgrain(gl_FragCoord.xy*time, 20.5, 1.0);
 		FragmentColor = vec4(stage0, 1.0);
 		break;

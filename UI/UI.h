@@ -2,7 +2,7 @@
 
 #include <string>
 #include <wchar.h>
-#include "../kami/kami.h"
+#include "kami.h"
 
 namespace klib {
 
@@ -50,8 +50,8 @@ namespace klib {
 
 		UIButton(KLGL *gcPtr, int initialState = 0);
 		~UIButton();
-		void draw();
-		void comp();
+		virtual void draw();
+		virtual void comp();
 	private:
 		int _getState(POINT mouse, int mouseState);
 	};

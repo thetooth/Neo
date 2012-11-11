@@ -290,6 +290,7 @@ namespace NeoPlatformer{
 		KLGLSprite *hudSpriteSheet16;
 		KLGLTexture *backdropTexture;
 		KLGLTexture *gameoverTexture;
+		KLGLTexture *lvlupTexture;
 
 		// Display list
 		int mapDispListState;
