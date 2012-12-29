@@ -1,0 +1,164 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="common">
+      <UniqueIdentifier>{51e65f04-36ed-4f48-8a51-665f781d2357}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="common\shaders">
+      <UniqueIdentifier>{ac1dbcb8-bf19-455b-b88c-2b0c56bf81f6}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="version.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="console.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="masternoodles.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="particles.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="platformer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="menu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource1.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="neo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lzoconf.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lzodefs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="minilzo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="platformer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="console.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="particles.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="menu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="neo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="minilzo.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="icon1.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="common\shaders\tile.vert">
+      <Filter>common\shaders</Filter>
+    </None>
+    <None Include="common\shaders\bindMultiTexture.frag">
+      <Filter>common\shaders</Filter>
+    </None>
+    <None Include="common\shaders\crt.frag">
+      <Filter>common\shaders</Filter>
+    </None>
+    <None Include="common\shaders\diffuse.frag">
+      <Filter>common\shaders</Filter>
+    </None>
+    <None Include="common\shaders\dither.frag">
+      <Filter>common\shaders</Filter>
+    </None>
+    <None Include="common\shaders\fastBloom.frag">
+      <Filter>common\shaders</Filter>
+    </None>
+    <None Include="common\shaders\gaussianBlur.frag">
+      <Filter>common\shaders</Filter>
+    </None>
+    <None Include="common\shaders\lights.frag">
+      <Filter>common\shaders</Filter>
+    </None>
+    <None Include="common\shaders\model.frag">
+      <Filter>common\shaders</Filter>
+    </None>
+    <None Include="common\shaders\passthrough.frag">
+      <Filter>common\shaders</Filter>
+    </None>
+    <None Include="common\shaders\production.frag">
+      <Filter>common\shaders</Filter>
+    </None>
+    <None Include="common\shaders\tile.frag">
+      <Filter>common\shaders</Filter>
+    </None>
+    <None Include="common\shaders\utility.frag">
+      <Filter>common\shaders</Filter>
+    </None>
+    <None Include="common\shaders\waves.frag">
+      <Filter>common\shaders</Filter>
+    </None>
+    <None Include="common\shaders\postDefaultF.glsl">
+      <Filter>common\shaders</Filter>
+    </None>
+    <None Include="common\shaders\postDefaultV.glsl">
+      <Filter>common\shaders</Filter>
+    </None>
+    <None Include="common\shaders\crt.vert">
+      <Filter>common\shaders</Filter>
+    </None>
+    <None Include="common\shaders\diffuse.vert">
+      <Filter>common\shaders</Filter>
+    </None>
+    <None Include="common\shaders\model.vert">
+      <Filter>common\shaders</Filter>
+    </None>
+    <None Include="common\shaders\passthrough.vert">
+      <Filter>common\shaders</Filter>
+    </None>
+    <None Include="configuration.json" />
+    <None Include="common\shaders\test.frag">
+      <Filter>common\shaders</Filter>
+    </None>
+    <None Include="common\shaders\cubes.frag">
+      <Filter>common\shaders</Filter>
+    </None>
+    <None Include="common\shaders\flares.frag">
+      <Filter>common\shaders</Filter>
+    </None>
+    <None Include="common\shaders\mask.frag">
+      <Filter>common\shaders</Filter>
+    </None>
+  </ItemGroup>
+</Project>

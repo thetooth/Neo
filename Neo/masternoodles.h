@@ -4,6 +4,7 @@
 #include "version.h"
 #include "tween.h"
 #include "../UI/UI.h"
+#include "minilzo.h"
 #include <fmod.hpp>
 #include <fmod_errors.h>
 #include <functional>
@@ -22,6 +23,11 @@
 #define NEO_NAMESPACE "neo"
 const int APP_SCREEN_W = 640;
 const int APP_SCREEN_H = 360;
+
+#define HEAP_ALLOC(var,size) \
+	lzo_align_t __LZO_MMODEL var [ ((size) + (sizeof(lzo_align_t) - 1)) / sizeof(lzo_align_t) ]
+
+static HEAP_ALLOC(wrkmem, LZO1X_1_MEM_COMPRESS);
 
 inline int floorMpl(float x,int m){
 	x = floor(x);

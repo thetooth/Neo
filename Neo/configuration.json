@@ -1,8 +1,8 @@
 {
 	"system": {
-		"debug":				false,	// Enable debug output
+		"debug":				true,	// Enable debug output
 		"fullscreen":			false,	// Attempt to run fullscreen
-		"bufferAutoSize":		true,	// Automaticlly resize the framebuffer to match the window size, otherwise its stretched
+		"bufferAutoSize":		false,	// Automaticlly resize the framebuffer to match the window size, otherwise its stretched
 		"windowWidth":			640,
 		"windowHeight":			360,
 		"bufferWidth":			640,

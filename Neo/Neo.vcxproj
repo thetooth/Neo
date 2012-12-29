@@ -141,8 +141,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="console.h" />
+    <ClInclude Include="lzoconf.h" />
+    <ClInclude Include="lzodefs.h" />
     <ClInclude Include="masternoodles.h" />
     <ClInclude Include="menu.h" />
+    <ClInclude Include="minilzo.h" />
+    <ClInclude Include="neo.h" />
     <ClInclude Include="particles.h" />
     <ClInclude Include="platformer.h" />
     <ClInclude Include="resource.h" />
@@ -153,6 +157,8 @@
     <ClCompile Include="console.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="menu.cpp" />
+    <ClCompile Include="minilzo.c" />
+    <ClCompile Include="neo.cpp" />
     <ClCompile Include="particles.cpp" />
     <ClCompile Include="platformer.cpp" />
   </ItemGroup>

@@ -5,7 +5,7 @@
 
 using namespace std;
 using namespace klib;
-namespace emb{
+namespace NeoPython{
 	PyObject* Stdout_write(PyObject* self, PyObject* args)
 	{
 		std::size_t written(0);
@@ -29,7 +29,7 @@ namespace emb{
 		return Py_BuildValue("");
 	}
 
-	PyMODINIT_FUNC PyInit_emb(void) 
+	PyMODINIT_FUNC PyInit_main(void) 
 	{
 		g_stdout = 0;
 		g_stdout_saved = 0;

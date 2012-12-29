@@ -14,7 +14,7 @@ using namespace klib;
 #define FPM 9
 #define MAP_PHASE_ADJ_SPEED			64
 
-namespace emb
+namespace NeoPython
 {
 
 	typedef std::function<void(std::string)> stdout_write_type;
@@ -87,7 +87,7 @@ namespace emb
 	static PyObject* g_stdout;
 	static PyObject* g_stdout_saved;
 
-	PyMODINIT_FUNC PyInit_emb(void);
+	PyMODINIT_FUNC PyInit_main(void);
 	void set_stdout(stdout_write_type write);
 	void reset_stdout();
 
