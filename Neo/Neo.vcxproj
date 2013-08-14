@@ -151,6 +151,7 @@
     <ClInclude Include="platformer.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="resource1.h" />
+    <ClInclude Include="UI.h" />
     <ClInclude Include="version.h" />
   </ItemGroup>
   <ItemGroup>
@@ -161,6 +162,7 @@
     <ClCompile Include="neo.cpp" />
     <ClCompile Include="particles.cpp" />
     <ClCompile Include="platformer.cpp" />
+    <ClCompile Include="UI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="icon1.ico" />
@@ -185,6 +187,7 @@
     <None Include="common\shaders\postDefaultF.glsl" />
     <None Include="common\shaders\postDefaultV.glsl" />
     <None Include="common\shaders\production.frag" />
+    <None Include="common\shaders\sinesea.frag" />
     <None Include="common\shaders\test.frag" />
     <None Include="common\shaders\tile.frag" />
     <None Include="common\shaders\tile.vert" />

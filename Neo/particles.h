@@ -60,7 +60,7 @@ namespace klib{
 		LiquidParticles(){
 
 		}
-		LiquidParticles(int count, POINT *mouseRef, int canvaswidth = 640, int canvasheight = 480);
+		LiquidParticles(int count, Point<int> *mouseRef, int canvaswidth = 640, int canvasheight = 480);
 		~LiquidParticles();
 		void initialize();
 		void audit(int addremove);

@@ -1,6 +1,5 @@
 #include "masternoodles.h"
 #include "platformer.h"
-#include "logicalObjects.h"
 #include <list>
 
 using namespace std;
@@ -338,7 +337,7 @@ namespace NeoPlatformer{
 					while(mapData[yl*map.width+xl] != 0 && mapData[yl*map.width+xl] == tile && mapMask[yl*map.width+xl] == mask){
 						yl++;
 						/*while(mapData[yl*map.width+xl] != 0 && mapData[yl*map.width+xl] == tile && mapMask[yl*map.width+xl] == mask){
-							xl++;
+						xl++;
 						}*/
 					}
 					map_span(y*map.width+x, x, y, 1, yl-y);
@@ -359,30 +358,31 @@ namespace NeoPlatformer{
 		cl("[OK]\n");
 	}
 
-	void Environment::drawLoader(KLGL* gc, int y, int height, int length, int speed){
+	void Environment::drawLoader(KLGL* gc, int x, int y, int width, int height, int percent, int speed){
 		static int i;
-		if (i == NULL || i < 0 || i >= gc->buffer.width+length){
+		if (i < 0 || i > percent){
 			i = 0;
 		}
-		int x = gc->buffer.width-i;
-		gc->OrthogonalStart(gc->overSampleFactor);
+		if(i < percent){
+			i += speed;
+		}
 		glBegin(GL_QUADS);
-		glColor4ub(255, 255, 255, 127);
+		glColor4ub(255, 255, 255, 255);
 		glVertex2i(x, y);
-		glColor4ub(255, 255, 255, 60);
-		glVertex2i(x+(length*((x+(length/2))/(float)gc->buffer.width)), y);
-		glVertex2i(x+(length*((x+(length/2))/(float)gc->buffer.width)), y+height);
-		glColor4ub(255, 255, 255, 127);
+		glVertex2i(x+((i/100.0f)*(float)width), y);
+		glVertex2i(x+((i/100.0f)*(float)width), y+height);
 		glVertex2i(x, y+height);
 		glEnd();
-		i += speed;
 	}
 
-	void EnvLoaderThread::run(){
+	int LoadEnv(Environment *loaderPtr){
 		// Cast it cunt
 		Environment *gameEnv = (Environment*)loaderPtr;
+
+#ifdef _WIN32
 		// Switch to auxiliary context to access texture data
 		wglMakeCurrent(gameEnv->gcProxy->windowManager->wm->hDC, gameEnv->gcProxy->windowManager->wm->hRCAUX);
+#endif
 
 		try{
 			// Load the map
@@ -390,7 +390,7 @@ namespace NeoPlatformer{
 			// Create our character
 			gameEnv->character = new Character(128, 0, 8, 16);
 			gameEnv->enemys.push_back(new Enemy(128, 415, 16, 16));
-			for (int i = 0; i < 16; i++)
+			for (int i = 0; i < 4; i++)
 			{
 				gameEnv->enemys.push_back(new Enemy(rand()%512, rand()%256, 16, 16));
 			}
@@ -428,15 +428,20 @@ namespace NeoPlatformer{
 				"common/shaders/postDefaultV.glsl",
 				"common/shaders/mask.frag"
 				);
+			gameEnv->gcProxy->InitShaders(6, 0, 
+				"common/shaders/postDefaultV.glsl",
+				"common/shaders/sinesea.frag"
+				);
 		}catch(KLGLException e){
-			MessageBox(NULL, e.getMessage(), "KLGLException", MB_OK | MB_ICONERROR);
-			status = false;
+			cl("KLGLException: %s\n", e.getMessage());
 		}
 
+#ifdef _WIN32
 		// Rebind the primary context(we have to do it in this thread since exiting with 
 		// the auxiliary bound causes both contexts to be reset.
 		wglMakeCurrent(gameEnv->gcProxy->windowManager->wm->hDC, gameEnv->gcProxy->windowManager->wm->hRC);
-		status = false;
+#endif
+		return 1;
 	}
 
 	Character::Character(float x, float y, int w, int h)
@@ -876,7 +881,7 @@ namespace NeoPlatformer{
 			glEnd();
 
 			char *tmp = new char[256];
-			sprintf_s(tmp, 256, "@CFFFFFF%d", mapDataPtr[tileId]);
+			snprintf(tmp, 256, "@CFFFFFF%d", mapDataPtr[tileId]);
 			env->numberFont->Draw(pos.x-4, pos.y+collisionRect.height-6, tmp);
 			delete [] tmp;
 		}

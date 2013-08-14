@@ -3,7 +3,7 @@
 #include "kami.h"
 #include "version.h"
 #include "tween.h"
-#include "../UI/UI.h"
+#include "UI.h"
 #include "minilzo.h"
 #include <fmod.hpp>
 #include <fmod_errors.h>

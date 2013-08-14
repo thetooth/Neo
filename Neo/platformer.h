@@ -2,8 +2,7 @@
 
 #define APP_ENABLE_LUA 1
 #include "kami.h"
-#include "logicalObjects.h"
-#include "particles.h"
+//#include "particles.h"
 #include <list>
 #include <map>
 #include <unordered_map>
@@ -227,7 +226,7 @@ namespace NeoPlatformer{
 			soundKey = 0;
 			channelKey = 0;
 
-			cl("Initialized FMOD %d.%d.%d\n", HIWORD(FMOD_VERSION), HIBYTE(LOWORD(FMOD_VERSION)), LOBYTE(LOWORD(FMOD_VERSION)));
+			cl("Initialized FMOD \n");//%d.%d.%d\n", HIWORD(FMOD_VERSION), HIBYTE(LOWORD(FMOD_VERSION)), LOBYTE(LOWORD(FMOD_VERSION)));
 		};
 
 		inline int loadSound(char* file, int key = -1, unsigned int flags = FMOD_DEFAULT){
@@ -301,29 +300,12 @@ namespace NeoPlatformer{
 		void comp(KLGL* gc, int offsetX = 0, int offsetY = 0);
 		void drawHUD(KLGL* gc);
 		void drawMap(KLGL* gc);
-		void drawLoader(KLGL* gc, int y, int height, int length, int speed);
+		void drawLoader(KLGL* gc, int x, int y, int width, int height, int percent, int speed);
 		void load_map(char* mapfile);
 		void map_span(int type, int x0, int y0, int x1, int y1);
 	};
 
-	class EnvLoaderThread : public KLGLThread {
-	public:
-		int status;
-		void *loaderPtr;
-		EnvLoaderThread(){};
-		EnvLoaderThread(void *parma){
-			status = true;
-			loaderPtr = parma;
-			start();
-		};
-		~EnvLoaderThread() {
-			status = false;
-			if(m_hThread != NULL) {
-				stop();
-			}
-		}
-		void run();
-	};
+	int LoadEnv(Environment *loaderPtr);
 
 	// Interface for objects including the player
 	class ObjectInterface {

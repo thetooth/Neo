@@ -4,7 +4,7 @@
 #include "particles.h"
 
 namespace klib{
-	LiquidParticles::LiquidParticles(int count, POINT *mouseRef, int canvaswidth, int canvasheight){
+	LiquidParticles::LiquidParticles(int count, Point<int> *mouseRef, int canvaswidth, int canvasheight){
 		canvasW = canvaswidth;
 		canvasH = canvasheight;
 		friction = 0.96f;
@@ -210,11 +210,19 @@ namespace klib{
 					particleTestPtr.simulate();
 					t_prev = clock();
 				}else{
+					#ifdef _WIN32
 					Sleep(t - t_prev);
+					#else
+					sleep(t - t_prev);
+					#endif
 				}
 			}
 			status = particleTestPtr.threadingState;
+			#ifdef _WIN32
 			Sleep(100);
+			#else
+			sleep(100);
+			#endif
 		}
 	}
 }

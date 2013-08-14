@@ -57,6 +57,9 @@
     <ClInclude Include="minilzo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="UI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="platformer.cpp">
@@ -78,6 +81,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="minilzo.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -158,6 +164,9 @@
       <Filter>common\shaders</Filter>
     </None>
     <None Include="common\shaders\mask.frag">
+      <Filter>common\shaders</Filter>
+    </None>
+    <None Include="common\shaders\sinesea.frag">
       <Filter>common\shaders</Filter>
     </None>
   </ItemGroup>

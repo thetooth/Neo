@@ -1,22 +1,20 @@
-﻿// Copyright 2005-2011 The Department of Redundancy Department.
+// Copyright 2005-2011 The Department of Redundancy Department.
 
 #include "masternoodles.h"
 #include "neo.h"
 #include "platformer.h"
 #include "console.h"
 
-#include "miniz.c"
+//#include "miniz.c"
 
 #ifdef _WIN32
 #ifdef KLGLENV64
 #pragma comment(lib,"kami64.lib")
 #pragma comment(lib,"fmodex64_vc.lib")
-#pragma comment(lib,"UI64.lib")
 #else
 #pragma comment(lib,"kami.lib")
 #pragma comment(lib,"fmodex_vc.lib")
 #pragma comment(lib,"python3.lib")
-#pragma comment(lib,"UI.lib")
 #endif
 #endif
 
@@ -26,8 +24,8 @@ using namespace NeoPlatformer;
 void Loading(KLGL *gc, KLGLTexture *loading);
 void Warning(KLGL *gc);
 
-int main(int argc, wchar_t **argv){
-	bool quit = false;
+int main(int argc, char **argv){
+	int quit = 1;
 	char inputBuffer[256] = {};
 	char textBuffer[4096] = {};
 
@@ -36,17 +34,17 @@ int main(int argc, wchar_t **argv){
 	System sys;
 	Neo neo;
 
-	neo.consoleInput =	1;
+	neo.consoleInput =	0;
 	neo.mode =			GameMode::_MENU;
 	neo.paused =		0;
 
 	bool internalTimer = false, mapScroll = false;
 	int frame = 0,fps = 0,cycle = 0, th_id = 0, nthreads = 0, qualityPreset = 0, shaderAlliterations = 0, scrollPos = INT_MAX;
 	float tweenX = 0, tweenY = 0, titleFade = 0;
-	POINT mouseXY, mouseXY_prev;
+	Point<int> mouseXY, mouseXY_prev;
 	clock_t t0 = clock(),t1 = 0,t2 = 0;
 	char wTitle[256] = {};
-	
+
 	Point<int> *stars[1000] = {};
 
 	tween::Tweener tweener;
@@ -62,23 +60,23 @@ int main(int argc, wchar_t **argv){
 		/*memset(&zip_archive, 0, sizeof(zip_archive));
 		status = mz_zip_reader_init_file(&zip_archive, "common.zip", 0);
 		if (!status){
-			cl("mz_zip_reader_init_file() failed!\n");
+		cl("mz_zip_reader_init_file() failed!\n");
 		}else{
-			cl("Initialized compressed filesystem(Miniz %s), using it...\n", MZ_VERSION);
-			// Try to extract to the heap.
-			char* fname = "common/sounds/ambient.mp3";
-			p = mz_zip_reader_extract_file_to_heap(&zip_archive, fname, &uncomp_size, 0);
-			if (!p){
-				printf("mz_zip_reader_extract_file_to_heap() failed!\n");
-				mz_zip_reader_end(&zip_archive);
-				return EXIT_FAILURE;
-			}
-			cl("Successfully extracted file \"%s\", size %u\n", fname, (unsigned int)uncomp_size);
-			// We're done.
-			free(p);
-			mz_zip_reader_end(&zip_archive);
+		cl("Initialized compressed filesystem(Miniz %s), using it...\n", MZ_VERSION);
+		// Try to extract to the heap.
+		char* fname = "common/sounds/ambient.mp3";
+		p = mz_zip_reader_extract_file_to_heap(&zip_archive, fname, &uncomp_size, 0);
+		if (!p){
+		printf("mz_zip_reader_extract_file_to_heap() failed!\n");
+		mz_zip_reader_end(&zip_archive);
+		return EXIT_FAILURE;
+		}
+		cl("Successfully extracted file \"%s\", size %u\n", fname, (unsigned int)uncomp_size);
+		// We're done.
+		free(p);
+		mz_zip_reader_end(&zip_archive);
 		}*/
-		unsigned char *testIn = new unsigned char[4096];
+		/*unsigned char *testIn = new unsigned char[4096];
 		unsigned char *testOut = new unsigned char[4096];
 		unsigned char *testOut2 = new unsigned char[4096];
 		unsigned long destLen;
@@ -88,7 +86,7 @@ int main(int argc, wchar_t **argv){
 		mz_compress(testOut, &destLen, testIn, strlen((char*)testIn)+1);
 		cl("Compressed: %s\n", testOut);
 		mz_uncompress(testOut2, &destLen2, testOut, destLen);
-		cl("Decompressed: %s\n", testOut2);
+		cl("Decompressed: %s\n", testOut2);*/
 
 		// Python
 		PyImport_AppendInittab("emb", NeoPython::PyInit_main);
@@ -99,9 +97,9 @@ int main(int argc, wchar_t **argv){
 		NeoPython::set_stdout(write);
 		PyRun_SimpleString("import platform; import neo; neo.cl(\"Initialized Python {0}\\n\".format(platform.python_version()))");
 
-		GetCursorPos(&mouseXY);
-		ScreenToClient(sys.gc->windowManager->wm->hWnd, &mouseXY);
-		mouseXY_prev = mouseXY;
+		//GetCursorPos(&mouseXY);
+		//ScreenToClient(sys.gc->windowManager->wm->hWnd, &mouseXY);
+		//mouseXY_prev = mouseXY;
 
 		// Loading screen and menu buffer
 		sys.warningTexture = new KLGLTexture("common/textures/warning.png");
@@ -179,16 +177,20 @@ int main(int argc, wchar_t **argv){
 		cl("Python Console Enabled!\n\n");
 	}
 
-	if (quit){
-		MessageBox(NULL, "An important resource is missing or failed to load, check the console window _now_ for more details.", "Error", MB_OK | MB_ICONERROR);
+	if (!quit){
+		cl("An important resource is missing or failed to load, check the console window _now_ for more details.");
 		if(KLGLDebug){
-			quit = 0;
+			quit = 1;
 		}
 	}
 
 	while (clock()-t0 < 2500 && !KLGLDebug){
 		// Ain't no thing
+		#ifdef _WIN32
 		Sleep(10);
+		#else
+		sleep(10);
+		#endif
 	}
 
 	sys.audio->system->playSound(FMOD_CHANNEL_FREE, sys.audio->sound[0], false, &sys.audio->channel[1]);
@@ -198,38 +200,21 @@ int main(int argc, wchar_t **argv){
 	titleFaderTween.addProperty(&titleFade, 255);
 	tweener.addTween(&titleFaderTween);
 
-	while (!quit)
+	while (sys.gc->ProcessEvent(&quit))
 	{
 		t0 = clock();
 
-#pragma region Input events
-
-		if(PeekMessage( &sys.gc->windowManager->wm->msg, NULL, 0, 0, PM_REMOVE)){
-			if(sys.gc->windowManager->wm->msg.message == WM_QUIT){
-				quit = true;
-			}else if (sys.gc->windowManager->wm->msg.message == WM_KEYUP){
-				switch(neo.mode){
-				case GameMode::_INGAME:
-					switch (sys.gc->windowManager->wm->msg.wParam){
-					case VK_LEFT:
-						neo.gameEnv->character->leftUp();
-						break;
-					case VK_RIGHT:
-						neo.gameEnv->character->rightUp();
-						break;
-					case VK_UP:
-						neo.gameEnv->character->jumpUp();
-						break;
-					}
-					break;
+		sys.gc->HandleEvent([&] (std::vector<klib::KLGLKeyEvent>::iterator key) {
+			if (key->isDown()){
+				if (KLGLDebug){
+					cl("Key: %x, %c\n", key->getCode(), key->getChar());
 				}
-			}else if (sys.gc->windowManager->wm->msg.message == WM_KEYDOWN){
 				// Application wide events
-				switch (sys.gc->windowManager->wm->msg.wParam){
-				case VK_ESCAPE:
-					PostQuitMessage(0);
+				switch (key->getCode()){
+				case klib::KLGLKeyEvent::KEY_ESCAPE:
+					quit = 0;
 					break;
-				case VK_D:
+				case klib::KLGLKeyEvent::KEY_d:
 					KLGLDebug = !KLGLDebug;
 					break;
 				}
@@ -237,52 +222,55 @@ int main(int argc, wchar_t **argv){
 				// Context sensitive
 				switch(neo.mode){
 				case GameMode::_MENU:
-					if(neo.consoleInput){
-						if ((sys.gc->windowManager->wm->msg.wParam>=32) && (sys.gc->windowManager->wm->msg.wParam<=255) && (sys.gc->windowManager->wm->msg.wParam != '|')) {
-							if (strlen(inputBuffer) < 255) {
-								//cl("key: 0x%x\n", graphicsContext->msg.wParam);
-								char buf[3];
-								sprintf(buf, "%c\0", vktochar(sys.gc->windowManager->wm->msg.wParam));
-								strcat(inputBuffer, buf);
+					/*if(neo.consoleInput){
+					if ((sys.gc->windowManager->wm->msg.wParam>=32) && (sys.gc->windowManager->wm->msg.wParam<=255) && (sys.gc->windowManager->wm->msg.wParam != '|')) {
+					if (strlen(inputBuffer) < 255) {
+					//cl("key: 0x%x\n", graphicsContext->msg.wParam);
+					char buf[3];
+					sprintf(buf, "%c\0", vktochar(sys.gc->windowManager->wm->msg.wParam));
+					strcat(inputBuffer, buf);
 
-							}
-						} else if (sys.gc->windowManager->wm->msg.wParam == VK_BACK) {
-							if(strlen(inputBuffer) > 0){
-								inputBuffer[strlen(inputBuffer)-1]='\0';
-							}
-						} else if (sys.gc->windowManager->wm->msg.wParam == VK_TAB) {
-							inputBuffer[strlen(inputBuffer)]='\t';
-						} else if (sys.gc->windowManager->wm->msg.wParam == VK_RETURN) {
-							if(strlen(inputBuffer) > 0){
-								if (strcmp(inputBuffer, "exit") == 0){
-									PostQuitMessage(0);
-									quit = true;
-								}else{
-									neo.console->input(inputBuffer);
-								}
-							}else{
-								cl("-- RETURN\n", 13);
-								neo.mode = GameMode::_MAPLOAD;
-							}
-							fill_n(inputBuffer, 256, '\0');
-						}
-					} else if (sys.gc->windowManager->wm->msg.wParam == VK_RETURN) {
+					}
+					} else if (sys.gc->windowManager->wm->msg.wParam == klib::KLGLKeyEvent::KEY_BACK) {
+					if(strlen(inputBuffer) > 0){
+					inputBuffer[strlen(inputBuffer)-1]='\0';
+					}
+					} else if (sys.gc->windowManager->wm->msg.wParam == klib::KLGLKeyEvent::KEY_TAB) {
+					inputBuffer[strlen(inputBuffer)]='\t';
+					} else if (sys.gc->windowManager->wm->msg.wParam == klib::KLGLKeyEvent::KEY_RETURN) {
+					if(strlen(inputBuffer) > 0){
+					if (strcmp(inputBuffer, "exit") == 0){
+					PostQuitMessage(0);
+					quit = true;
+					}else{
+					neo.console->input(inputBuffer);
+					}
+					}else{
+					cl("-- RETURN\n", 13);
+					neo.mode = GameMode::_MAPLOAD;
+					}
+					fill_n(inputBuffer, 256, '\0');
+					}
+					} else */
+					if (key->getCode() == klib::KLGLKeyEvent::KEY_RETURN) {
 						neo.mode = GameMode::_MAPLOAD;
+					} else if (key->getCode() == klib::KLGLKeyEvent::KEY_e) {
+						neo.mode = GameMode::_CREDITS;
 					}
 					break;
 				case GameMode::_INGAME:
-					switch (sys.gc->windowManager->wm->msg.wParam){
-					case VK_RETURN:
+					switch (key->getCode()){
+					case klib::KLGLKeyEvent::KEY_RETURN:
 						neo.mode = GameMode::_MAPDESTROY;
 						break;
-					case VK_T:
+					case klib::KLGLKeyEvent::KEY_t:
 						internalTimer = !internalTimer;
 						break;
-					case VK_V:
+					case klib::KLGLKeyEvent::KEY_v:
 						sys.gc->vsync = !sys.gc->vsync;
-						SetVSync(sys.gc->vsync);
+						//SetVSync(sys.gc->vsync);
 						break;
-					case VK_G:
+					case klib::KLGLKeyEvent::KEY_g:
 						if (qualityPreset < 3)
 						{
 							qualityPreset++;
@@ -290,13 +278,13 @@ int main(int argc, wchar_t **argv){
 							qualityPreset = 0;
 						}
 						break;
-					case VK_R:
+					case klib::KLGLKeyEvent::KEY_r:
 						neo.mode = GameMode::_MAPLOAD;
 						break;
-					case VK_M:
+					case klib::KLGLKeyEvent::KEY_m:
 						mapScroll = !mapScroll;
 						break;
-					case VK_P:
+					case klib::KLGLKeyEvent::KEY_p:
 						if (!neo.paused){
 							titleFade = 0.0f;
 							titleFaderTween.addProperty(&titleFade, 255);
@@ -307,26 +295,41 @@ int main(int argc, wchar_t **argv){
 						}
 						neo.paused = !neo.paused;
 						break;
-					case VK_LEFT:
+					case klib::KLGLKeyEvent::KEY_LEFT:
 						neo.gameEnv->character->left();
 						break;
-					case VK_RIGHT:
+					case klib::KLGLKeyEvent::KEY_RIGHT:
 						neo.gameEnv->character->right();
 						break;
-					case VK_UP:
+					case klib::KLGLKeyEvent::KEY_UP:
 						neo.gameEnv->character->jump();
 						break;
 					}
 					break;
 				}
 			}else{
-				TranslateMessage(&sys.gc->windowManager->wm->msg);
-				DispatchMessage(&sys.gc->windowManager->wm->msg);
+				if (key->getCode() == klib::KLGLKeyEvent::KEY_ESCAPE){
+					quit = 0;
+				}
+				switch(neo.mode){
+				case GameMode::_INGAME:
+					switch (key->getCode()){
+					case klib::KLGLKeyEvent::KEY_LEFT:
+						neo.gameEnv->character->leftUp();
+						break;
+					case klib::KLGLKeyEvent::KEY_RIGHT:
+						neo.gameEnv->character->rightUp();
+						break;
+					case klib::KLGLKeyEvent::KEY_UP:
+						neo.gameEnv->character->jumpUp();
+						break;
+					}
+					break;
+				}
 			}
+			key->finished();
+		});
 
-#pragma endregion
-
-		}
 		if (t0-t2 >= CLOCKS_PER_SEC){
 			fps = frame;
 			frame = 0;
@@ -334,7 +337,7 @@ int main(int argc, wchar_t **argv){
 
 			// Title
 			sprintf(wTitle, "Neo - FPS: %d", fps);
-			SetWindowText(sys.gc->windowManager->wm->hWnd, wTitle);
+			//SetWindowText(sys.gc->windowManager->wm->hWnd, wTitle);
 
 			// Update graphics quality
 			sys.gc->BindShaders(1);
@@ -342,8 +345,8 @@ int main(int argc, wchar_t **argv){
 			sys.gc->UnbindShaders();
 		}else if (t0-t1 >= CLOCKS_PER_SEC/sys.gc->fps || !internalTimer){
 
-			GetCursorPos(&mouseXY);
-			ScreenToClient(sys.gc->windowManager->wm->hWnd, &mouseXY);
+			//GetCursorPos(&mouseXY);
+			//ScreenToClient(sys.gc->windowManager->wm->hWnd, &mouseXY);
 
 			sys.audio->system->update();
 
@@ -397,33 +400,42 @@ int main(int argc, wchar_t **argv){
 					// Shutdown any sound the menu mite be playing
 					sys.audio->channel[0]->stop();
 					sys.audio->channel[1]->stop();
-					// Initialize the game engine
+					// Initialize the game engine and pass-through our systems
 					neo.gameEnv = new Environment("common/map01");
 					neo.gameEnv->gcProxy = sys.gc;
 					neo.gameEnv->audioProxy = sys.audio;
-					// Pass-through our font
 					neo.gameEnv->hudFont = sys.font;
 					neo.gameEnv->numberFont = sys.numberFont;
 
-					// Setup a thread to load and parse our map(if the map is large we want to be able to check its progress).
-					EnvLoaderThread *mapLoader = new EnvLoaderThread(neo.gameEnv);
-					cl("Loading thread %d started.\n", GetThreadId(mapLoader->getHandle()));
-
-					// Enter a tight loop of no return :D
-					while(mapLoader->status){
+					#ifdef _WIN32
+					cl("Performing async loading...\n");
+					std::chrono::milliseconds span (10);
+					std::future<int> loaderStatus = std::async(launch::async, &LoadEnv, neo.gameEnv);
+					while (loaderStatus.wait_for(span) == std::future_status::timeout){
 						// Read latest console buffer
 						sprintf(textBuffer, "@CFFFFFF%s", clBuffer);
 
+						sys.gc->OpenFBO();
 						sys.gc->OrthogonalStart();
 						glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+						KLGLColor(255,255,255,255).Set();
 						sys.gc->Blit2D(sys.loadingTexture, 0, 0);
-						neo.gameEnv->drawLoader(sys.gc, sys.gc->buffer.height-(24*sys.gc->overSampleFactor), 1*sys.gc->overSampleFactor, 100*sys.gc->overSampleFactor, 16*sys.gc->overSampleFactor);
+						neo.gameEnv->drawLoader(sys.gc, 0, sys.gc->buffer.height-24, sys.gc->buffer.width, 16, 50, 1);
 						if (KLGLDebug){
 							sys.font->Draw(8, 14, textBuffer);
 						}
 						sys.gc->OrthogonalEnd();
-						SwapBuffers(sys.gc->windowManager->wm->hDC);
+						sys.gc->Swap();
 					}
+					#else
+					sys.gc->OpenFBO();
+					sys.gc->OrthogonalStart();
+					glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+					sys.gc->Blit2D(sys.loadingTexture, 0, 0);
+					sys.gc->OrthogonalEnd();
+					sys.gc->Swap();
+					LoadEnv(neo.gameEnv);
+					#endif
 
 					// Setup initial post quality
 					sys.gc->BindShaders(1);
@@ -445,7 +457,8 @@ int main(int argc, wchar_t **argv){
 
 					neo.mode = GameMode::_INGAME;
 				}catch(KLGLException e){
-					MessageBox(NULL, e.getMessage(), "KLGLException", MB_OK | MB_ICONERROR);
+					cl("KLGLException: %s\n", e.getMessage());
+					//MessageBox(NULL, e.getMessage(), "KLGLException", MB_OK | MB_ICONERROR);
 					neo.mode = GameMode::_MENU;
 				}
 
@@ -468,7 +481,7 @@ int main(int argc, wchar_t **argv){
 					sys.audio->system->playSound(FMOD_CHANNEL_FREE, sys.audio->sound[0], false, &sys.audio->channel[0]);
 					sys.audio->channel[0]->setVolume(0.5f);
 				}catch(KLGLException e){
-					MessageBox(NULL, e.getMessage(), "KLGLException", MB_OK | MB_ICONERROR);
+					cl("KLGLException: %s\n", e.getMessage());
 					neo.mode = GameMode::_MENU;
 				}
 
@@ -602,7 +615,7 @@ int main(int argc, wchar_t **argv){
 						// Cloud
 						sys.gc->Blit2D(neo.gameEnv->backdropTexture, (APP_SCREEN_W/2)-(neo.gameEnv->scroll.x/4), (APP_SCREEN_H/3)-(neo.gameEnv->scroll.y/4));
 
-						glActiveTexture(GL_TEXTURE1);
+						/*glActiveTexture(GL_TEXTURE1);
 						glBindTexture(GL_TEXTURE_2D, neo.gameEnv->mapSpriteSheet->texturePtr->gltexture);
 						glActiveTexture(GL_TEXTURE2);
 						glBindTexture(GL_TEXTURE_2D, sys.testTexture->gltexture);
@@ -613,6 +626,14 @@ int main(int argc, wchar_t **argv){
 						glUniform2f(glGetUniformLocation(sys.gc->GetShaderID(5), "resolution"), sys.gc->buffer.width, sys.gc->buffer.height);
 						glUniform4f(glGetUniformLocation(sys.gc->GetShaderID(5), "tileRect"), 64, 64, neo.gameEnv->mapSpriteSheet->texturePtr->width, neo.gameEnv->mapSpriteSheet->texturePtr->height);
 						sys.gc->BindMultiPassShader(5, 1, false);
+						sys.gc->UnbindShaders();*/
+
+						// Sea
+						sys.gc->BindShaders(6);
+						glUniform1f(glGetUniformLocation(sys.gc->GetShaderID(6), "time"), sys.gc->shaderClock/1000.0f);
+						glUniform2f(glGetUniformLocation(sys.gc->GetShaderID(6), "resolution"), sys.gc->buffer.width/sys.gc->overSampleFactor, sys.gc->buffer.height/sys.gc->overSampleFactor);
+						glUniform2f(glGetUniformLocation(sys.gc->GetShaderID(6), "offset"), -neo.gameEnv->scroll.x, neo.gameEnv->scroll.y-144);
+						sys.gc->BindMultiPassShader(6, 1, false);
 						sys.gc->UnbindShaders();
 
 						// Draw Map
@@ -626,7 +647,7 @@ int main(int argc, wchar_t **argv){
 
 						// Lighting effects
 						sys.gc->BindShaders(4);
-						glUniform1f(glGetUniformLocation(sys.gc->GetShaderID(4), "time"), sys.gc->shaderClock);
+						glUniform1f(glGetUniformLocation(sys.gc->GetShaderID(4), "time"), t0);
 						glUniform2f(glGetUniformLocation(sys.gc->GetShaderID(4), "resolution"), sys.gc->buffer.width/sys.gc->overSampleFactor, sys.gc->buffer.height/sys.gc->overSampleFactor);
 						glUniform2f(glGetUniformLocation(sys.gc->GetShaderID(4), "position"), (neo.gameEnv->scroll.x-(56*16))/1.0f, (neo.gameEnv->scroll.y-(27*16))/1.0f);
 						glUniform1f(glGetUniformLocation(sys.gc->GetShaderID(4), "radius"), 140.0f);
@@ -667,7 +688,7 @@ int main(int argc, wchar_t **argv){
 
 						// Master post shader data
 						sys.gc->BindShaders(1);
-						glUniform1f(glGetUniformLocation(sys.gc->GetShaderID(1), "time"), sys.gc->shaderClock);
+						glUniform1f(glGetUniformLocation(sys.gc->GetShaderID(1), "time"), t0);
 						glUniform2f(glGetUniformLocation(sys.gc->GetShaderID(1), "resolution"), sys.gc->buffer.width/sys.gc->overSampleFactor, sys.gc->buffer.height/sys.gc->overSampleFactor);
 						sys.gc->BindMultiPassShader(1, 1, false);
 						sys.gc->UnbindShaders();
@@ -700,7 +721,7 @@ int main(int argc, wchar_t **argv){
 				break;
 			default:
 				Warning(sys.gc);
-				Sleep(1000);
+				//Sleep(1000);
 			}
 			frame++;
 			cycle++;
